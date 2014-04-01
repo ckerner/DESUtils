@@ -1,0 +1,17 @@
+#!/bin/bash
+
+OPTS=$*
+
+df -P ${OPTS} | grep -E "gpfs.ncsa.illinois.edu|Filesystem|/dev/des" | \
+   sed -e 's/Capacity/Use\%/g' | \
+   sed -e 's/gpfs.ncsa.illinois.edu://g' | \
+   sed -e 's/ \/des001/ \/home \/usr\/apps \/home2/g' | \
+   sed -e 's/ \/des002/ \/work/g' | \
+   sed -e 's/ \/des003/ \/archive_data/g' | \
+   sed -e 's/ \/des004/ \/archive_data\/Archive\/OPS\/coadd \& mangle/g' | \
+   sed -e 's/ \/des005/ \/archive_data\/Archive\/OPS\/red/g' | \
+   sed -e 's/ \/des006/ \/archive_data\/Archive\/DTS/g' | \
+   sed -e 's/ \/des007/ \/DTS_ingest/g' | \
+   sed -e 's/ \/des008/ \/cluster_scratch \/san \/db_backup /g' | \
+   awk '{printf("%-12s %13s %13s %13s %4s %-s %-s %s %s\n",$1,$2,$3,$4,$5,$6,$7,$8,$9)}'
+
