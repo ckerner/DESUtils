@@ -1,0 +1,19 @@
+#!/bin/bash
+
+MNTPT=$1
+
+PRGNAME=`basename $0`
+MOUNT=`which mount`
+
+if [ "x${MNTPT}" == "x" ] ; then 
+   printf "\n\tUsage: ${PRGNAME} <Mount Point>\n\n"
+   printf "\tReturn Code\tMeaning\n"
+   printf "\t          0\tThe specified mount point is not mounted.\n"
+   printf "\t          1\tThe specified mount point is mounted.\n\n"
+   exit 0
+fi
+
+MNTCNT=`${MOUNT} | grep "on ${MNTPT}" | wc -l`
+exit ${MNTCNT}
+
+

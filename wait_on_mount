@@ -1,0 +1,45 @@
+#!/bin/bash
+
+
+MNTPT=$1
+MNTCNT=$2
+TIMER=$3
+
+PRGNAME=`basename $0`
+MOUNT=`which mount`
+DEFAULT_MNTCNT=12
+DEFAULT_TIMER=5
+COUNTER=0
+
+if [ "x${MNTPT}" == "x" ] ; then 
+   printf "\n\tUsage: ${PRGNAME} <Mount Point> <# Retries> <Sleep Seconds>\n\n"
+   exit 0
+fi
+
+if [ "x${MNTCNT}" == "x" ] ; then
+   MNTCNT=${DEFAULT_MNTCNT}
+fi
+
+if [ "x${TIMER}" == "x" ] ; then
+   TIMER=${DEFAULT_TIMER}
+fi
+
+/usr/local/bin/check_mountpoint ${MNTPT}
+FS_MOUNTED=$?
+while [ ${FS_MOUNTED} -eq 0 ] ;
+   do sleep ${TIMER}
+   /usr/local/bin/check_mountpoint ${MNTPT}
+   FS_MOUNTED=$?
+   MSG="${MNTPT} not mounted... "`date`
+   echo $MSG
+   COUNTER=$((COUNTER+1))
+   if [ ${COUNTER} -ge ${MNTCNT} ] ; then
+      echo "Mount Attempts: ${COUNTER} exceeds Maximum Attempts: ${MNTCNT}"
+      exit 1
+   fi
+done
+
+echo "${MNTPT} is mounted... "`date`
+exit 0
+
+
